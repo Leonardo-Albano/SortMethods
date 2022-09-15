@@ -8,6 +8,7 @@
 from random import randrange 
 import math
 import copy
+from re import X
 import time
 from xmlrpc.client import boolean
 
@@ -115,6 +116,7 @@ def localizaPato (labirinto, localizacaoAtual, proximaLocalizacao):
             posicaoCerta = True
             break
     
+#---------Verifica se a proxima posição é possível dentro do sistema---------#
     if labirinto[proximaLocalizacao] != "|-|" and posicaoCerta == True:
         if (localizacaoAtual-proximaLocalizacao)==1:
             labirinto[localizacaoAtual] = "<<<"
@@ -134,30 +136,88 @@ def localizaPato (labirinto, localizacaoAtual, proximaLocalizacao):
         print("A posição %d está bloqueada!" % proximaLocalizacao)
         
     return valorHeuristica
+
+#funçao busca gulosa
+def buscaGulosa(labirinto, posicaoAtual):
+    distanciaDireita = 0
+    distanciaEsquerda = 0
+    distanciaBaixo = 0
+    distanciaCima = 0
+    
+    if labirinto[posicaoAtual+1] != "|-|" and (posicaoAtual+1)%10!=0:     #direita
+        x = posicaoAtual
+        x+=1
+        while((x+1)%10!=0):
+            x+=1
+            distanciaDireita+=1
+        while(x < 89):
+            x+=10
+            distanciaDireita+=1
+        distanciaDireita+=1
+        
+    if labirinto[posicaoAtual-1] != "|-|" and posicaoAtual%10!=0:     #esquerda
+        x = posicaoAtual
+        x-=1
+        while((x+1)%10!=0):
+            x+=1
+            distanciaEsquerda+=1
+        while(x < 89):
+            x+=10
+            distanciaEsquerda+=1
+        distanciaEsquerda+=1
+        
+    if labirinto[posicaoAtual+10] != "|-|" and posicaoAtual<90:     #baixo
+        x = posicaoAtual
+        x+=10
+        while((x+1)%10!=0):
+            x+=1
+            distanciaBaixo+=1
+        while(x < 89):
+            x+=10
+            distanciaBaixo+=1
+        distanciaBaixo+=1
+        
+    if labirinto[posicaoAtual-10] != "|-|" and posicaoAtual>10:     #cima
+        x = posicaoAtual
+        x-=10
+        while((x+1)%10!=0):
+            x+=1
+            distanciaCima+=1
+        while(x < 89):
+            x+=10
+            distanciaCima+=1
+        distanciaCima+=1
+        
+    print(distanciaDireita)
+    print(distanciaEsquerda)
+    print(distanciaBaixo)
+    print(distanciaCima)
+
 #funçao de heuristica
-def heuristica (Labirinto, ponto):
-    x, y = ponto
-    #declara a variavel heuristica
-    heuristica = math.sqrt((x - 9) * 2 + (y - 9) * 2)
-    return heuristica
-#funçao de busca em A*
-def busca (Labirinto, ponto_inicial, ponto_final):
-    #declara a variabel ponto inicial
-    ponto_inicial = (0, 0)
-    #declara a variabel ponto final
-    ponto_final = (9, 9)
-    #declara a variavel fechado
-    fechado = set()
-    #declara a variavel aberto
-    aberto = set([ponto_inicial])
-    #declara a variavel caminho
-    caminho = {}
-    #declara a variavel g
-    g = {ponto_inicial: 0}
-    #declara a variavel f
-    h = {ponto_inicial: heuristica(Labirinto, ponto_inicial)}
-    #enquanto o aberto for diferente de vazio
-    f = {ponto_inicial: g[ponto_inicial] + h[ponto_inicial]}
+#funçao de heuristica
+# def heuristica (Labirinto, ponto):
+#     x, y = ponto
+#     #declara a variavel heuristica
+#     heuristica = math.sqrt((x - 9) * 2 + (y - 9) * 2)
+#     return heuristica
+# #funçao de busca em A*
+# def busca (Labirinto, ponto_inicial, ponto_final):
+#     #declara a variavel ponto inicial
+#     ponto_inicial = (0, 0)
+#     #declara a variavel ponto final
+#     ponto_final = (9, 9)
+#     #declara a variavel fechado
+#     fechado = set()
+#     #declara a variavel aberto
+#     aberto = set([ponto_inicial])
+#     #declara a variavel caminho
+#     caminho = {}
+#     #declara a variavel g
+#     g = {ponto_inicial: 0}
+#     #declara a variavel f
+#     h = {ponto_inicial: heuristica(Labirinto, ponto_inicial)}
+#     #enquanto o aberto for diferente de vazio
+#     f = {ponto_inicial: g[ponto_inicial] + h[ponto_inicial]}
 
 print("Temos que ajudar o nosso pato encontrar o caminho mais curto para chegar a em seu lago")
 print("O nosso pato está no ponto (0,0) e tem que chegar no ponto (9,9)")
@@ -168,8 +228,8 @@ print("O nosso pato pode se mover para cima, baixo, esquerda ou direita")
 labirinto = []
 labirinto = criaLabirinto()
 imprimeLabirinto(labirinto)
-contEuristica = localizaPato(labirinto, 0, 10)
-contEuristica += localizaPato(labirinto, 10, 11)
-contEuristica += localizaPato(labirinto, 11, 1)
-print(contEuristica)
-imprimeLabirinto(labirinto)
+buscaGulosa(labirinto, 11)
+
+# contEuristica = localizaPato(labirinto, 0, 10)
+# print(contEuristica)
+# imprimeLabirinto(labirinto)
