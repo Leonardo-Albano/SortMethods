@@ -49,7 +49,7 @@ def criaLabirinto ():
 #---caso a posição tenha menos que 2 adjascentes, o programa aleatoriza novamente---#                
         if contadorAdjasc<2:
             while(True):
-                numAleatorio= randrange(1, 5)
+                numAleatorio = randrange(1, 5)
                 
                 if numAleatorio == 1 and (x % 10!=0):
                     labirinto[x-1] = 0
@@ -66,7 +66,7 @@ def criaLabirinto ():
                 if numAleatorio == 4 and not x in range(0, 10):
                     labirinto[x-10] = 0
                     break
-        
+    labirinto = atribuiCusto(labirinto)    
     return labirinto
 
 #funçao para imprimir o labirinto
@@ -74,10 +74,7 @@ def imprimeLabirinto(labirinto):
     cont = 0
     print("_________________________________________\n|", end="")
     for x in labirinto:
-        if x==0:
-            print("   ", end="")
-        else:
-            print("XXX", end = "")
+        print('{:03}'.format(x), end = "")
         cont+=1
         if cont%10!=0:
             print(" ", end = "")
@@ -85,21 +82,58 @@ def imprimeLabirinto(labirinto):
             print("|\n|", end = "")
     print("̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ")
 #funçao de adjacente para o labirinto
-def adjacente (labirinto, ponto):
-    x, y = ponto
-    adjacente = []
-    if x > 0:
-        adjacente.append((x - 1, y))
-    if x < 9:
-        adjacente.append((x + 1, y))
-    if y > 0:
-        adjacente.append((x, y - 1))
-    if y < 9:
-        adjacente.append((x, y + 1))
-    return adjacente
-#funçao de custo
-def custo (Labirinto, ponto):
-    return 1
+# def adjacente (labirinto, ponto):
+#     x, y = ponto
+#     adjacente = []
+#     if x > 0:
+#         adjacente.append((x - 1, y))
+#     if x < 9:
+#         adjacente.append((x + 1, y))
+#     if y > 0:
+#         adjacente.append((x, y - 1))
+#     if y < 9:
+#         adjacente.append((x, y + 1))
+#     return adjacente
+#funçao para aleatorizar os custos de cada casa)
+def atribuiCusto (labirinto):
+    for x in range(len(labirinto)):
+        if labirinto[x] != 0:
+            labirinto[x] = "|-|"
+        else:
+            labirinto[x] = randrange(1, 5)
+    labirinto[0] = "^)>"
+            
+    return labirinto
+#funçao alterar o tabuleiro com o caminho do pato
+def localizaPato (labirinto, localizacaoAtual, proximaLocalizacao):
+    valorHeuristica = 0
+    posicaoCerta = False
+    
+#-------Verifica se a localizacao atual bate com a localização do pato-------#
+    for x in range(len(labirinto)):
+        if x == localizacaoAtual and labirinto[x] == "^)>":
+            posicaoCerta = True
+            break
+    
+    if labirinto[proximaLocalizacao] != "|-|" and posicaoCerta == True:
+        if (localizacaoAtual-proximaLocalizacao)==1:
+            labirinto[localizacaoAtual] = "<<<"
+        if (localizacaoAtual-proximaLocalizacao)==-1:
+            labirinto[localizacaoAtual] = ">>>"
+        if (localizacaoAtual-proximaLocalizacao)==10:
+            labirinto[localizacaoAtual] = "^^^"
+        if (localizacaoAtual-proximaLocalizacao)==-10:
+            labirinto[localizacaoAtual] = "vvv"
+        
+        valorHeuristica = labirinto[proximaLocalizacao]
+        labirinto[proximaLocalizacao] = "^)>"
+#--------testes para saber se o sistema está funcionando corretamente--------#
+    elif posicaoCerta == False:
+        print("O pato não está nessa posição")
+    else:
+        print("A posição %d está bloqueada!" % proximaLocalizacao)
+        
+    return valorHeuristica
 #funçao de heuristica
 def heuristica (Labirinto, ponto):
     x, y = ponto
@@ -133,4 +167,9 @@ print("O nosso pato pode se mover para cima, baixo, esquerda ou direita")
 
 labirinto = []
 labirinto = criaLabirinto()
+imprimeLabirinto(labirinto)
+contEuristica = localizaPato(labirinto, 0, 10)
+contEuristica += localizaPato(labirinto, 10, 11)
+contEuristica += localizaPato(labirinto, 11, 1)
+print(contEuristica)
 imprimeLabirinto(labirinto)
