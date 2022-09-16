@@ -1,4 +1,4 @@
-#problema e otimizacao de busca em A*
+     #problema e otimizacao de busca em A*
 #o problema de otimização é o de encontrar o menor caminho dentro de um labirinto de 10x10 casas (1600 casas)
 #o labirinto é representado por uma matriz de 10x10 casas, cada casa pode ser livre ou ocupada
 #o agente começa na casa (0,0) e tem que chegar na casa (9,9)
@@ -106,7 +106,7 @@ def atribuiCusto (labirinto):
             
     return labirinto
 #funçao alterar o tabuleiro com o caminho do pato
-def localizaPato (labirinto, localizacaoAtual, proximaLocalizacao):
+def movimentaPato (labirinto, localizacaoAtual, proximaLocalizacao):
     valorHeuristica = 0
     posicaoCerta = False
     
@@ -135,63 +135,58 @@ def localizaPato (labirinto, localizacaoAtual, proximaLocalizacao):
     else:
         print("A posição %d está bloqueada!" % proximaLocalizacao)
         
+    imprimeLabirinto(labirinto)
     return valorHeuristica
-
 #funçao busca gulosa
 def buscaGulosa(labirinto, posicaoAtual):
-    distanciaDireita = 0
-    distanciaEsquerda = 0
-    distanciaBaixo = 0
-    distanciaCima = 0
+    labirintoTeste = []
+    labirintoTeste = labirinto
+    caminhoTotal = 0
     
-    if labirinto[posicaoAtual+1] != "|-|" and (posicaoAtual+1)%10!=0:     #direita
-        x = posicaoAtual
-        x+=1
-        while((x+1)%10!=0):
-            x+=1
-            distanciaDireita+=1
-        while(x < 89):
-            x+=10
-            distanciaDireita+=1
-        distanciaDireita+=1
-        
-    if labirinto[posicaoAtual-1] != "|-|" and posicaoAtual%10!=0:     #esquerda
-        x = posicaoAtual
-        x-=1
-        while((x+1)%10!=0):
-            x+=1
-            distanciaEsquerda+=1
-        while(x < 89):
-            x+=10
-            distanciaEsquerda+=1
-        distanciaEsquerda+=1
-        
-    if labirinto[posicaoAtual+10] != "|-|" and posicaoAtual<90:     #baixo
-        x = posicaoAtual
-        x+=10
-        while((x+1)%10!=0):
-            x+=1
-            distanciaBaixo+=1
-        while(x < 89):
-            x+=10
-            distanciaBaixo+=1
-        distanciaBaixo+=1
-        
-    if labirinto[posicaoAtual-10] != "|-|" and posicaoAtual>10:     #cima
-        x = posicaoAtual
-        x-=10
-        while((x+1)%10!=0):
-            x+=1
-            distanciaCima+=1
-        while(x < 89):
-            x+=10
-            distanciaCima+=1
-        distanciaCima+=1
-        
-    print(distanciaDireita)
-    print(distanciaEsquerda)
-    print(distanciaBaixo)
-    print(distanciaCima)
+    while True:
+        menorDistancia = 5
+
+        if (posicaoAtual+1)%10!=0 and type(labirinto[posicaoAtual+1]) != str:            #direita
+            if menorDistancia>labirinto[posicaoAtual+1]:
+                menorDistancia = labirinto[posicaoAtual+1]
+                movimento = "d"
+
+        if posicaoAtual%10!=0 and type(labirinto[posicaoAtual-1]) != str:                #esquerda
+            if menorDistancia>labirinto[posicaoAtual-1]:
+                menorDistancia = labirinto[posicaoAtual-1]
+                movimento = "e"
+            
+        if posicaoAtual<90 and type(labirinto[posicaoAtual+10]) != str:                  #baixo
+            if menorDistancia>labirinto[posicaoAtual+10]:
+                menorDistancia = labirinto[posicaoAtual+10]
+                movimento = "b"
+            
+        if posicaoAtual>10 and type(labirinto[posicaoAtual-10]) != str:                  #cima
+            if menorDistancia>labirinto[posicaoAtual-10]:
+                menorDistancia = labirinto[posicaoAtual-10]
+                movimento = "c"
+
+        if type(labirinto[posicaoAtual+1]) == str and type(labirinto[posicaoAtual-1]) == str and type(labirinto[posicaoAtual+10]) == str and type(labirinto[posicaoAtual-10]) == str:
+            print("O pato ficou preso, meus pesâmes...")
+            exit(1)
+            
+        if movimento == "d":
+            caminhoTotal += movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual+1)
+            posicaoAtual+=1
+        if movimento == "e":
+            caminhoTotal += movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual-1)
+            posicaoAtual-=1
+        if movimento == "b":
+            caminhoTotal += movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual+10)
+            posicaoAtual+=10
+        if movimento == "c":
+            caminhoTotal += movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual-10)
+            posicaoAtual-=10
+
+        # imprimeLabirinto(labirintoTeste)
+
+        if(posicaoAtual == 99):
+            break
 
 #funçao de heuristica
 #funçao de heuristica
@@ -228,8 +223,8 @@ print("O nosso pato pode se mover para cima, baixo, esquerda ou direita")
 labirinto = []
 labirinto = criaLabirinto()
 imprimeLabirinto(labirinto)
-buscaGulosa(labirinto, 11)
+buscaGulosa(labirinto, 0)
 
-# contEuristica = localizaPato(labirinto, 0, 10)
+# contEuristica = movimentaPato(labirinto, 0, 10)
 # print(contEuristica)
 # imprimeLabirinto(labirinto)
