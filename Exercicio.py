@@ -1,6 +1,7 @@
 #o agente pode se mover para cima, baixo, esquerda ou direita
 #o agente não pode sair do labirinto
 #o agente não pode passar por uma casa ocupada
+from ast import Try
 from random import randrange
 import math
 import copy
@@ -24,7 +25,7 @@ def criaLabirinto ():
  
 #------------------faz a verificação dos adjascentes de cada posição-----------------#
     for x in range(len(labirinto)):
-        contadorAdjasc = 0
+        contadorAdjasc = 0  
    
         if (x+1)%10!=0:                     #coluna do 9-19-29-...
             if labirinto[x+1] == 0:
@@ -118,35 +119,38 @@ def movimentaPato (labirinto, localizacaoAtual, proximaLocalizacao):
 #funçao para verificar se o pato está preso
 def verificaPatoPreso(labirinto, posicaoAtual):
 
-    if (posicaoAtual+1)%10==0 and type(labirinto[posicaoAtual-1]) == str and type(labirinto[posicaoAtual+10]) == str and type(labirinto[posicaoAtual-10]) == str:
-        print("O pato ficou preso na direita.. Quase que chega lá...")
-        return(1)
-    
-    if posicaoAtual>89 and type(labirinto[posicaoAtual-1]) == str and type(labirinto[posicaoAtual+1]) == str and type(labirinto[posicaoAtual-10]) == str:
-        print("O pato ficou preso embaixo.. coitado dele...")
-        return(1)
-    
-    if posicaoAtual<10 and type(labirinto[posicaoAtual-1]) == str and type(labirinto[posicaoAtual+10]) == str and type(labirinto[posicaoAtual+1]) == str:
-        print("O pato ficou preso lá encima, meio longe da lagoa, não acha?")
-        return(1)
-    
-    if posicaoAtual%10==0 and type(labirinto[posicaoAtual+1]) == str and type(labirinto[posicaoAtual+10]) == str and type(labirinto[posicaoAtual-10]) == str:
-        print("O pato ficou preso na esquerda.. looonge.. tadinho...")
-        return(1)
-    
-    if posicaoAtual>89 and posicaoAtual%10==0 and type(labirinto[posicaoAtual-10]) == str and type(labirinto[posicaoAtual+1]) == str:
-        print("O pato está preso para sempre no cantinho de baixo.")
-        return(1)
-    
-    if (posicaoAtual+1)%10==0 and posicaoAtual<10 and type(labirinto[posicaoAtual+10]) == str and type(labirinto[posicaoAtual-1]) == str:
-        print("Na busca pela lagoa, o pato só encontrou a perdição no topo do mapa..")
-        return(1)
-    
-    if type(labirinto[posicaoAtual+1]) == str and type(labirinto[posicaoAtual-1]) == str and type(labirinto[posicaoAtual+10]) == str and type(labirinto[posicaoAtual-10]) == str:
-        print("O pato ficou preso bem no meio... Lagoa fica pra proxima.")
-        return(1)
-    
-    return(0)               #retorna 0 caso o pato não esteja preso
+    try:
+        if (posicaoAtual+1)%10==0 and type(labirinto[posicaoAtual-1]) == str and type(labirinto[posicaoAtual+10]) == str and type(labirinto[posicaoAtual-10]) == str:
+            print("O pato ficou preso na direita.. Quase que chega lá...")
+            return(1)
+        
+        if posicaoAtual>89 and type(labirinto[posicaoAtual-1]) == str and type(labirinto[posicaoAtual+1]) == str and type(labirinto[posicaoAtual-10]) == str:
+            print("O pato ficou preso embaixo.. coitado dele...")
+            return(1)
+        
+        if posicaoAtual<10 and type(labirinto[posicaoAtual-1]) == str and type(labirinto[posicaoAtual+10]) == str and type(labirinto[posicaoAtual+1]) == str:
+            print("O pato ficou preso lá encima, meio longe da lagoa, não acha?")
+            return(1)
+        
+        if posicaoAtual%10==0 and type(labirinto[posicaoAtual+1]) == str and type(labirinto[posicaoAtual+10]) == str and type(labirinto[posicaoAtual-10]) == str:
+            print("O pato ficou preso na esquerda.. looonge.. tadinho...")
+            return(1)
+        
+        if posicaoAtual>89 and posicaoAtual%10==0 and type(labirinto[posicaoAtual-10]) == str and type(labirinto[posicaoAtual+1]) == str:
+            print("O pato está preso para sempre no cantinho de baixo.")
+            return(1)
+        
+        if (posicaoAtual+1)%10==0 and posicaoAtual<10 and type(labirinto[posicaoAtual+10]) == str and type(labirinto[posicaoAtual-1]) == str:
+            print("Na busca pela lagoa, o pato só encontrou a perdição no topo do mapa..")
+            return(1)
+        
+        if type(labirinto[posicaoAtual+1]) == str and type(labirinto[posicaoAtual-1]) == str and type(labirinto[posicaoAtual+10]) == str and type(labirinto[posicaoAtual-10]) == str:
+            print("O pato ficou preso bem no meio... Lagoa fica pra proxima.")
+            return(1)
+    except:                         #corrigir possível erro de list out of range
+        print("O pato ficou preso por aí..")
+        return(1)    
+    return(0)                       #retorna 0 caso o pato não esteja preso
 
 def verificaMenorCaminho(labirinto, posicaoAtual):
     menorDistancia = 5              #inicia o valor mais que qualquer custo
@@ -181,6 +185,7 @@ def buscaGulosa(labirinto):
     caminhoTotal = 0
    
     while True:
+        
         if(verificaPatoPreso(labirinto, posicaoAtual)==1):      #caso o pato esteja preso, finaliza a tentativa com falha
             break
             
@@ -203,6 +208,7 @@ def buscaGulosa(labirinto):
         if(posicaoAtual == 99):                         #caso o pato chegue no final, finaliza a tentativa com sucesso                                      
             print("O pato chegou até a lagoa!! \o/\nO número da heurística foi de %d." % caminhoTotal)
             print("Agora ele pode nadar feliz em sua lagoinha!")
+            return caminhoTotal
             break
 
  
@@ -216,6 +222,7 @@ print("Dependendo da busca, nosso pato pode não chegar na lagoa")
 print("O caminho pode ser traiçoeiro, não permitindo o pato chegar no seu objetivo")
 
 labirinto = []
+heuristicaLst = []
 
 while True:
     print("\nQual forma de busca você deseja fazer?")
@@ -225,7 +232,11 @@ while True:
     imprimeLabirinto(labirinto)
     
     if escolha == 1: 
-        buscaGulosa(labirinto)
+        heuristica = buscaGulosa(labirinto)
+        if heuristica!=0:
+            heuristicaLst.append(heuristica)
+            
+
     elif escolha == 2:
         print("a")
         #buscaA(labirinto)#
@@ -234,5 +245,9 @@ while True:
         print("Escolha inválida.")
         
     if int(input("Deseja jogar novamente?\n(0-Não/1-Sim): ")) == 0:
+        print("Os números de heurística obtidos foram de: ")
+        for x in heuristicaLst:
+            if x!=None:
+                print(x)            
         print("Obrigado por jogar!")
         break
