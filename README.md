@@ -1,5 +1,5 @@
 # Projeto de Buscas
-Trabalho universitário de Sistemas inteligentes, sobre métodos de busca, focando principalmente em A* e Busca Gulosa
+Trabalho universitário de Sistemas inteligentes, sobre métodos de busca, focando principalmente em A* e Busca Gulosa.
 Escolhimos estes dois metodos para execultar nossas busca, dentro de um metodo radomico ele e para fazer a busca e mostrar no final
 
 O nosso protagonista e o senhor pato Bubba
@@ -26,3 +26,4 @@ O nosso protagonista e o senhor pato Bubba
 
 
 #O nosso pato pode se mover para cima, baixo, esquerda ou direita
+
