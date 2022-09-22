@@ -230,8 +230,8 @@ def buscaA(labirinto):
     while True:
         if(verificaPatoPreso(labirinto, posicaoAtual)==1):
             break
-        posicaoAtual = aberta[0]
-        aberta.remove(posicaoAtual)
+        posicaoAtual = 0
+        # aberta.remove(posicaoAtual)
         fechada.append(posicaoAtual)
         heuristica(posicaoAtual)
         if(posicaoAtual == 99):
@@ -239,33 +239,38 @@ def buscaA(labirinto):
             print("Agora ele pode nadar feliz em sua lagoinha!")
             break
         if (posicaoAtual+1)%10!=0 and type(labirinto[posicaoAtual+1]) != str and labirinto[posicaoAtual+1] not in fechada:            #direita
+            aberta.append(posicaoAtual)
+            fechada.append(posicaoAtual)
             caminhoTotal += movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual+1)
             posicaoAtual+=1
-            aberta.append(posicaoAtual)
-            labirinto[posicaoAtual] = heuristica(posicaoAtual) + caminhoTotal
-            posicaoAtual-=1
-            caminhoTotal -= movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual+1)
+            fechada.append(posicaoAtual)
+            caminhoTotal += movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual+1)
         if posicaoAtual%10!=0 and type(labirinto[posicaoAtual-1]) != str and labirinto[posicaoAtual-1] not in fechada:                #esquerda
+            aberta.append(posicaoAtual)
+            fechada.append(posicaoAtual)
             caminhoTotal += movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual-1)
             posicaoAtual-=1
+            fechada.append(posicaoAtual)
+            caminhoTotal += movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual-1)
+        if posicaoAtual<9 and type(labirinto[posicaoAtual+10]) != str and labirinto[posicaoAtual+10] not in fechada:                  #baixo
             aberta.append(posicaoAtual)
-            labirinto[posicaoAtual] = heuristica(posicaoAtual) + caminhoTotal
-            posicaoAtual+=1
-            caminhoTotal -= movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual-1)
-        if posicaoAtual<90 and type(labirinto[posicaoAtual+10]) != str and labirinto[posicaoAtual+10] not in fechada:                  #baixo
+            fechada.append(posicaoAtual)
             caminhoTotal += movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual+10)
             posicaoAtual+=10
-            aberta.append(posicaoAtual)
-            labirinto[posicaoAtual] = heuristica(posicaoAtual) + caminhoTotal
-            posicaoAtual-=10
-            caminhoTotal -= movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual+10)
+            fechada.append(posicaoAtual)
+            caminhoTotal += movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual+10)
         if posicaoAtual>10 and type(labirinto[posicaoAtual-10]) != str and labirinto[posicaoAtual-10] not in fechada:                  #cima
+            aberta.append(posicaoAtual)
+            fechada.append(posicaoAtual)
             caminhoTotal += movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual-10)
             posicaoAtual-=10
-            aberta.append(posicaoAtual)
-            labirinto[posicaoAtual] = heuristica(posicaoAtual) + caminhoTotal
-            posicaoAtual+=10
-            caminhoTotal -= movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual-10)
+            fechada.append(posicaoAtual)
+            caminhoTotal += movimentaPato(labirintoTeste, posicaoAtual, posicaoAtual-10)
+        if fechada == 99:
+            print("O pato chegou até a lagoa!! \o/\nO número da heurística foi de %d." % caminhoTotal)
+            print("Agora ele pode nadar feliz em sua lagoinha!")
+            exit()
+            break
         aberta.sort(key=lambda x: labirinto[x])
         print(aberta)
         print(fechada)
